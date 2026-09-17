@@ -1,0 +1,232 @@
+/* =========================================================
+   STORY PAGE — uses variables from ../stories.css
+========================================================= */
+
+.story-page {
+    max-width: 900px;
+    margin: auto;
+    padding: 3rem 1.5rem 5rem;
+}
+
+/* =========================================================
+   BACK LINK
+========================================================= */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 2.5rem;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.back-link:hover {
+    color: var(--accent);
+}
+
+.back-link i {
+    transition: transform 0.3s ease;
+}
+
+.back-link:hover i {
+    transform: translateX(-3px);
+}
+
+/* =========================================================
+   STORY HEADER
+========================================================= */
+.story-header {
+    margin-bottom: 3rem;
+}
+
+.story-header .story-category {
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.story-header h1 {
+    font-size: 3.2rem;
+    line-height: 1.15;
+    margin: 0.8rem 0 1.2rem;
+    font-weight: 700;
+}
+
+.story-intro {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    max-width: 700px;
+    margin-bottom: 1.5rem;
+}
+
+/* =========================================================
+   STORY META
+========================================================= */
+.story-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.story-meta i {
+    color: var(--accent);
+    margin-right: 0.3rem;
+}
+
+/* =========================================================
+   STORY CONTENT
+========================================================= */
+.story-content {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: var(--text-primary);
+}
+
+.story-content p {
+    margin-bottom: 1.75rem;
+}
+
+/* =========================================================
+   STORY ACTIONS
+========================================================= */
+.story-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 3.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.story-stats {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.story-stats i {
+    color: var(--accent);
+    margin-right: 0.4rem;
+}
+
+.share-buttons {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.share-buttons button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+.share-buttons button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 15px var(--glow-color);
+}
+
+/* =========================================================
+   RELATED STORIES
+========================================================= */
+.related-stories {
+    padding-top: 4rem;
+    max-width: 900px;
+}
+
+.related-stories h2 {
+    margin-bottom: 1.5rem;
+}
+
+.related-stories h2::after {
+    margin: 0.5rem 0 0;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+.related-card {
+    position: relative;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 15px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.related-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 0 25px var(--glow-hover);
+}
+
+.related-card span {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.related-card h3 {
+    margin: 0.75rem 0;
+    font-size: 1.15rem;
+    line-height: 1.3;
+}
+
+.related-card p {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+@media (max-width: 768px) {
+    .story-page {
+        padding: 2rem 1.25rem 4rem;
+    }
+
+    .story-header h1 { font-size: 2.2rem; }
+    .story-intro { font-size: 1rem; }
+    .story-content { font-size: 1rem; }
+
+    .story-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .share-buttons {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .share-buttons button {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .related-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .story-header h1 { font-size: 1.85rem; }
+    .story-content { font-size: 0.95rem; }
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://neckrone8x.co.ke/sitemap.xml
