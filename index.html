@@ -535,11 +535,10 @@
         /* =========================================================
            CARDS (SKILLS, PROJECTS, SOCIAL, MORE, SERVICES)
            position:relative added so absolutely-positioned children
-           (e.g. .social-arrow) anchor to the card, not the viewport.
+           (e.g. absolutely positioned badges) anchor to the card, not the viewport.
         ========================================================= */
         .skill,
         .project,
-        .social-card,
         .service-card,
         .live-card {
             position: relative;
@@ -553,7 +552,6 @@
 
         .skill:hover,
         .project:hover,
-        .social-card:hover,
         .service-card:hover,
         .live-card:hover {
             transform: translateY(-4px);
@@ -563,7 +561,6 @@
 
         .skill:active,
         .project:active,
-        .social-card:active,
         .service-card:active,
         .live-card:active {
             transform: translateY(-1px);
@@ -764,46 +761,54 @@
             padding: 0.2rem 0.75rem;
         }
 
-        /* Project screenshot thumbnails (fixed height keeps cards even) */
+        /* Project thumbnails: one wide 16:10 box on every card keeps heights even */
         .project-thumb {
             margin: -1.5rem -1.5rem 1.25rem;
-            height: 170px;
+            aspect-ratio: 16 / 10;
             overflow: hidden;
             border-radius: 14px 14px 0 0;
             border-bottom: 1px solid var(--card-border);
             background: var(--chip-bg);
         }
         .project-thumb img {
+            display: block;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: 50% 6%;
+            object-position: center;
             transition: transform 0.4s ease;
-        }
-        .project-thumb.thumb-web img {
-            object-position: 50% 45%;
         }
         .project:hover .project-thumb img {
             transform: scale(1.04);
         }
-        .project-thumb.placeholder {
+        /* Very wide screenshots: keep the left edge (logo/title) in frame */
+        .project-thumb.thumb-left img {
+            object-position: left center;
+        }
+
+        /* Mkuu app: logo centred on an accent-colour gradient (not cropped) */
+        .project-thumb.thumb-logo {
+            --logo-bg: #0b1222;
+            --logo-glow-1: rgba(56, 189, 248, 0.45);
+            --logo-glow-2: rgba(167, 139, 250, 0.45);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            color: var(--accent);
             background:
-                radial-gradient(circle at 30% 20%, var(--chip-bg), transparent 60%),
-                linear-gradient(145deg, var(--chip-bg), transparent);
+                radial-gradient(circle at 20% 25%, var(--logo-glow-1), transparent 55%),
+                radial-gradient(circle at 80% 80%, var(--logo-glow-2), transparent 55%),
+                var(--logo-bg);
         }
-        .project-thumb.placeholder i {
-            opacity: 0.55;
+        [data-theme="light"] .project-thumb.thumb-logo {
+            --logo-bg: #f8fafc;
+            --logo-glow-1: rgba(14, 165, 233, 0.28);
+            --logo-glow-2: rgba(139, 92, 246, 0.28);
         }
-        /* Single-column cards don't need matching heights, so skip icon-only placeholders */
-        @media (max-width: 600px) {
-            .project-thumb.placeholder {
-                display: none;
-            }
+        .project-thumb.thumb-logo img {
+            width: auto;
+            height: 88%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
         }
 
         /* =========================================================
@@ -1132,61 +1137,167 @@
         }
 
         /* =========================================================
-           SOCIAL
+           CONTACT (compact: icons + chat note left, form right)
         ========================================================= */
-        .social-container {
+        .contact-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: 1fr;
             gap: 1.5rem;
+            align-items: start;
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+        @media (min-width: 900px) {
+            .contact-layout {
+                grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+                gap: 2.5rem;
+            }
         }
 
-        .social-icon {
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-        .social-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
-        }
-        .social-card p {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-        .social-arrow {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            transition: transform 0.3s;
-        }
-        .social-card:hover .social-arrow {
-            transform: translateX(5px);
-            color: var(--accent);
+        .contact-subtitle {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.9rem;
         }
 
-        /* =========================================================
-           CONTACT FORM
-        ========================================================= */
-        .reply-note {
+        /* Round icon buttons */
+        .social-icons {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .social-btn {
+            position: relative;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 50%;
+            font-size: 1.15rem;
+            color: var(--accent);
+            background: linear-gradient(145deg, var(--card-grad-start), var(--card-grad-end));
+            border: 1px solid var(--card-border);
+            transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .social-btn:hover,
+        .social-btn:focus-visible {
+            transform: translateY(-3px);
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+            box-shadow: 0 8px 18px -8px var(--glow-hover);
+        }
+        /* Label tooltip (pointer devices only; the aria-label covers screen readers) */
+        .social-btn::after {
+            content: attr(data-label);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translate(-50%, 4px);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            font-size: 0.72rem;
+            font-weight: 500;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            z-index: 5;
+        }
+        @media (hover: hover) {
+            .social-btn:hover::after,
+            .social-btn:focus-visible::after {
+                opacity: 1;
+                visibility: visible;
+                transform: translate(-50%, 0);
+            }
+        }
+        @media (max-width: 899px) {
+            .contact-aside {
+                text-align: center;
+            }
+            .social-icons {
+                justify-content: center;
+                max-width: 250px; /* exactly 5 buttons per row */
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        /* "Prefer to chat?" note */
+        .chat-note {
+            background: linear-gradient(145deg, var(--card-grad-start), var(--card-grad-end));
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 1rem 1.1rem;
+        }
+        .chat-note p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            margin: 0.2rem 0 0.75rem;
+        }
+        .chat-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        @media (max-width: 899px) {
+            .chat-links {
+                justify-content: center;
+            }
+        }
+        .chat-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .chat-links a:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Form card */
+        .contact-card {
+            background: linear-gradient(145deg, var(--card-grad-start), var(--card-grad-end));
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 1.25rem;
+        }
+        .contact-card .contact-subtitle {
+            margin-bottom: 0.15rem;
+        }
+
+        .reply-note {
+            display: flex;
+            align-items: center;
             gap: 0.4rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin: -1rem 0 1.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.9rem;
         }
         .reply-note i {
             color: var(--accent);
         }
 
         .form-status {
-            margin-top: 1rem;
-            padding: 0.75rem 1rem;
+            margin-top: 0.75rem;
+            padding: 0.6rem 0.9rem;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             display: flex;
             align-items: flex-start;
             gap: 0.5rem;
@@ -1208,29 +1319,28 @@
             text-decoration: underline;
         }
 
-        .contact-form button:disabled {
-            opacity: 0.7;
-            cursor: wait;
+        .contact-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.6rem;
+            margin-bottom: 0.6rem;
         }
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: var(--card-bg);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
+        @media (min-width: 600px) {
+            .contact-form .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
         }
         .contact-form input,
         .contact-form textarea {
+            display: block;
             width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
+            padding: 0.55rem 0.75rem;
             border: 1px solid var(--card-border);
             border-radius: 8px;
             background-color: transparent;
             color: var(--text-primary);
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 1rem; /* 16px stops iOS zooming into the field */
             transition: var(--transition);
         }
         .contact-form input:focus,
@@ -1240,15 +1350,21 @@
             box-shadow: 0 0 10px var(--glow-color);
         }
         .contact-form textarea {
-            min-height: 150px;
+            height: 110px;
+            min-height: 80px;
             resize: vertical;
+            margin-bottom: 0.75rem;
         }
         .contact-form button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
             background-color: var(--accent);
             color: var(--bg-primary);
             border: none;
-            padding: 0.8rem 1.5rem;
+            padding: 0.6rem 1.3rem;
             border-radius: 8px;
+            font-family: inherit;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -1256,6 +1372,10 @@
         .contact-form button:hover {
             background-color: var(--accent-hover);
             box-shadow: 0 0 20px var(--glow-hover);
+        }
+        .contact-form button:disabled {
+            opacity: 0.7;
+            cursor: wait;
         }
 
         footer {
@@ -1780,7 +1900,6 @@
                 font-size: 1rem;
             }
             .projects-container,
-            .social-container,
             .services-container {
                 grid-template-columns: 1fr;
             }
@@ -2007,9 +2126,9 @@
             <div class="projects-container">
 
                 <article class="project">
-                    <div class="project-thumb">
-                        <img src="assets/img/mkuu-zeus.webp" width="576" height="1280" loading="lazy" decoding="async"
-                             alt="Mkuu app Zeus screen with a button to identify music and a grid of recently recognised songs">
+                    <div class="project-thumb thumb-logo">
+                        <img src="assets/img/mkuu-logo.webp" width="512" height="512" loading="lazy" decoding="async"
+                             alt="Mkuu app logo: a gradient letter M with a music note in a chat bubble">
                     </div>
                     <div class="project-head">
                         <span class="project-icon"><i class="bi bi-music-note-beamed" aria-hidden="true"></i></span>
@@ -2028,7 +2147,7 @@
                 <article class="project">
                     <div class="project-thumb thumb-web">
                         <img src="assets/img/mkuuai-web.webp" width="900" height="390" loading="lazy" decoding="async"
-                             alt="Mkuu AI website in a browser, showing story cards with Read story buttons and a weather answer for Kisumu">
+                             alt="Mkuu AI website showing story cards with Read story buttons and a weather answer for Kisumu">
                     </div>
                     <div class="project-head">
                         <span class="project-icon"><i class="bi bi-robot" aria-hidden="true"></i></span>
@@ -2045,9 +2164,9 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-thumb">
-                        <img src="assets/img/stories.webp" width="576" height="1280" loading="lazy" decoding="async"
-                             alt="Neckrone8x Stories on a phone, showing the trending this week list and latest stories">
+                    <div class="project-thumb thumb-left">
+                        <img src="assets/img/stories-desktop.webp" width="900" height="387" loading="lazy" decoding="async"
+                             alt="Neckrone8x Stories website with search, category filters and the trending this week list">
                     </div>
                     <div class="project-head">
                         <span class="project-icon"><i class="bi bi-book" aria-hidden="true"></i></span>
@@ -2065,7 +2184,10 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-thumb placeholder" aria-hidden="true"><i class="bi bi-lightbulb"></i></div>
+                    <div class="project-thumb">
+                        <img src="assets/img/esp32-desktop.webp" width="900" height="506" loading="lazy" decoding="async"
+                             alt="ESP32 board lighting an RGB LED red, controlled from a phone showing colour buttons for red, green, blue, purple, white and off">
+                    </div>
                     <div class="project-head">
                         <span class="project-icon"><i class="bi bi-lightbulb" aria-hidden="true"></i></span>
                         <span class="project-number">04</span>
@@ -2101,8 +2223,8 @@
 
                 <article class="project">
                     <div class="project-thumb">
-                        <img src="assets/img/weather.webp" width="576" height="1280" loading="lazy" decoding="async"
-                             alt="Weather app on a phone showing Kisumu, Kenya at 21.9°C with scattered clouds">
+                        <img src="assets/img/weather-desktop.webp" width="900" height="391" loading="lazy" decoding="async"
+                             alt="Weather app website showing Kisumu, Kenya at 29.9°C with broken clouds, humidity, wind and sunrise times">
                     </div>
                     <div class="project-head">
                         <span class="project-icon"><i class="bi bi-cloud-sun" aria-hidden="true"></i></span>
@@ -2136,7 +2258,10 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-thumb placeholder" aria-hidden="true"><i class="bi bi-phone"></i></div>
+                    <div class="project-thumb thumb-left">
+                        <img src="assets/img/daraja.webp" width="900" height="507" loading="lazy" decoding="async"
+                             alt="M-Pesa Daraja integration dashboard">
+                    </div>
                     <div class="project-head">
                         <span class="project-icon"><i class="bi bi-phone" aria-hidden="true"></i></span>
                         <span class="project-number">06</span>
@@ -2152,7 +2277,10 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-thumb placeholder" aria-hidden="true"><i class="bi bi-controller"></i></div>
+                    <div class="project-thumb thumb-left">
+                        <img src="assets/img/snake-desktop.webp" width="900" height="393" loading="lazy" decoding="async"
+                             alt="Snake Pro X game in the browser with difficulty menu, scores, global leaderboard and power-ups">
+                    </div>
                     <div class="project-head">
                         <span class="project-icon"><i class="bi bi-controller" aria-hidden="true"></i></span>
                         <span class="project-number">07</span>
@@ -2168,7 +2296,10 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-thumb placeholder" aria-hidden="true"><i class="bi bi-motherboard"></i></div>
+                    <div class="project-thumb">
+                        <img src="assets/img/arduino-1.webp" width="900" height="506" loading="lazy" decoding="async"
+                             alt="Arduino and IoT prototype">
+                    </div>
                     <div class="project-head">
                         <span class="project-icon"><i class="bi bi-motherboard" aria-hidden="true"></i></span>
                         <span class="project-number">08</span>
@@ -2304,93 +2435,62 @@
 
         <!-- Social / Contact -->
         <section id="social" class="reveal">
-            <p class="small-title">CONNECT WITH ME</p>
+            <p class="small-title" style="text-align: center;">CONNECT WITH ME</p>
             <h2>Let's Connect</h2>
             <p class="section-description">
                 Follow, message, or connect with me across my platforms.
             </p>
 
-            <div class="social-container">
-                <a href="https://github.com/neckrone8x" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="GitHub profile">
-                    <i class="bi bi-github social-icon"></i>
-                    <h3>GitHub</h3>
-                    <p>My code &amp; projects</p>
-                    <span class="social-arrow">→</span>
-                </a>
-                <a href="https://wa.me/qr/EZY6LUBLXSELB1" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="WhatsApp chat">
-                    <i class="bi bi-whatsapp social-icon"></i>
-                    <h3>WhatsApp</h3>
-                    <p>Chat with me</p>
-                    <span class="social-arrow">→</span>
-                </a>
-                <a href="https://x.com/Sentichuro" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="X (Twitter) profile">
-                    <i class="bi bi-twitter-x social-icon"></i>
-                    <h3>X</h3>
-                    <p>Follow me on X</p>
-                    <span class="social-arrow">→</span>
-                </a>
-                <a href="https://t.me/NECKRONE8X" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="Telegram contact">
-                    <i class="bi bi-telegram social-icon"></i>
-                    <h3>Telegram</h3>
-                    <p>Connect with me</p>
-                    <span class="social-arrow">→</span>
-                </a>
-                <a href="https://youtube.com/@neckrone8x" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="YouTube channel">
-                    <i class="bi bi-youtube social-icon"></i>
-                    <h3>YouTube</h3>
-                    <p>Watch my videos</p>
-                    <span class="social-arrow">→</span>
-                </a>
-                <a href="https://www.tiktok.com/@gen_zs_nation" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="TikTok profile">
-                    <i class="bi bi-tiktok social-icon"></i>
-                    <h3>TikTok</h3>
-                    <p>Follow my TikTok</p>
-                    <span class="social-arrow">→</span>
-                </a>
-                <a href="https://www.facebook.com/share/19PJpUxfMz/" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="Facebook page">
-                    <i class="bi bi-facebook social-icon"></i>
-                    <h3>Facebook</h3>
-                    <p>Visit my page</p>
-                    <span class="social-arrow">→</span>
-                </a>
-                <a href="https://pin.it/1omMeu4Ih" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="Pinterest boards">
-                    <i class="bi bi-pinterest social-icon"></i>
-                    <h3>Pinterest</h3>
-                    <p>See my pins</p>
-                    <span class="social-arrow">→</span>
-                </a>
-                <a href="https://linktr.ee/neckrone8x" target="_blank" rel="noopener noreferrer" class="social-card" aria-label="Linktree links">
-                    <i class="bi bi-link-45deg social-icon"></i>
-                    <h3>Linktree</h3>
-                    <p>All my links</p>
-                    <span class="social-arrow">→</span>
-                </a>
-                <a href="mailto:Sentichuro@gmail.com" class="social-card" aria-label="Send email to Bradley">
-                    <i class="bi bi-envelope-fill social-icon"></i>
-                    <h3>Gmail</h3>
-                    <p>Mail me</p>
-                    <span class="social-arrow">→</span>
-                </a>
-            </div>
+            <div class="contact-layout">
+                <div class="contact-aside">
+                    <h3 class="contact-subtitle">Find me online</h3>
+                    <ul class="social-icons">
+                        <li><a href="https://github.com/neckrone8x" target="_blank" rel="noopener noreferrer" class="social-btn" data-label="GitHub" aria-label="GitHub profile"><i class="bi bi-github" aria-hidden="true"></i></a></li>
+                        <li><a href="https://wa.me/qr/EZY6LUBLXSELB1" target="_blank" rel="noopener noreferrer" class="social-btn" data-label="WhatsApp" aria-label="Chat on WhatsApp"><i class="bi bi-whatsapp" aria-hidden="true"></i></a></li>
+                        <li><a href="https://x.com/Sentichuro" target="_blank" rel="noopener noreferrer" class="social-btn" data-label="X" aria-label="X (Twitter) profile"><i class="bi bi-twitter-x" aria-hidden="true"></i></a></li>
+                        <li><a href="https://t.me/NECKRONE8X" target="_blank" rel="noopener noreferrer" class="social-btn" data-label="Telegram" aria-label="Message on Telegram"><i class="bi bi-telegram" aria-hidden="true"></i></a></li>
+                        <li><a href="https://youtube.com/@neckrone8x" target="_blank" rel="noopener noreferrer" class="social-btn" data-label="YouTube" aria-label="YouTube channel"><i class="bi bi-youtube" aria-hidden="true"></i></a></li>
+                        <li><a href="https://www.tiktok.com/@gen_zs_nation" target="_blank" rel="noopener noreferrer" class="social-btn" data-label="TikTok" aria-label="TikTok profile"><i class="bi bi-tiktok" aria-hidden="true"></i></a></li>
+                        <li><a href="https://www.facebook.com/share/19PJpUxfMz/" target="_blank" rel="noopener noreferrer" class="social-btn" data-label="Facebook" aria-label="Facebook page"><i class="bi bi-facebook" aria-hidden="true"></i></a></li>
+                        <li><a href="https://pin.it/1omMeu4Ih" target="_blank" rel="noopener noreferrer" class="social-btn" data-label="Pinterest" aria-label="Pinterest boards"><i class="bi bi-pinterest" aria-hidden="true"></i></a></li>
+                        <li><a href="https://linktr.ee/neckrone8x" target="_blank" rel="noopener noreferrer" class="social-btn" data-label="Linktree" aria-label="All my links on Linktree"><i class="bi bi-link-45deg" aria-hidden="true"></i></a></li>
+                        <li><a href="mailto:Sentichuro@gmail.com" class="social-btn" data-label="Email" aria-label="Send me an email"><i class="bi bi-envelope-fill" aria-hidden="true"></i></a></li>
+                    </ul>
 
-            <div style="margin-top: 3rem;">
-                <h2>Send Me a Message</h2>
-                <p class="reply-note"><i class="bi bi-clock-history" aria-hidden="true"></i> I usually reply within 24 hours.</p>
-                <form class="contact-form" id="contactForm" action="https://formspree.io/f/mnpnaqez" method="POST">
+                    <div class="chat-note">
+                        <h3 class="contact-subtitle" style="margin-bottom: 0;">Prefer to chat?</h3>
+                        <p>Message me directly for quick questions or project ideas.</p>
+                        <div class="chat-links">
+                            <a href="https://wa.me/qr/EZY6LUBLXSELB1" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp" aria-hidden="true"></i> WhatsApp</a>
+                            <a href="https://t.me/NECKRONE8X" target="_blank" rel="noopener noreferrer"><i class="bi bi-telegram" aria-hidden="true"></i> Telegram</a>
+                            <a href="mailto:Sentichuro@gmail.com"><i class="bi bi-envelope" aria-hidden="true"></i> Email</a>
+                        </div>
+                    </div>
+                </div>
 
-                    <label for="contact-name" class="sr-only">Your name</label>
-                    <input type="text" id="contact-name" name="name" placeholder="Your name" required autocomplete="name">
+                <div class="contact-card">
+                    <h3 class="contact-subtitle">Send me a message</h3>
+                    <p class="reply-note"><i class="bi bi-clock-history" aria-hidden="true"></i> I usually reply within 24 hours.</p>
+                    <form class="contact-form" id="contactForm" action="https://formspree.io/f/mnpnaqez" method="POST">
+                        <div class="form-row">
+                            <div>
+                                <label for="contact-name" class="sr-only">Your name</label>
+                                <input type="text" id="contact-name" name="name" placeholder="Your name" required autocomplete="name">
+                            </div>
+                            <div>
+                                <label for="contact-email" class="sr-only">Your email</label>
+                                <input type="email" id="contact-email" name="email" placeholder="Your email" required autocomplete="email">
+                            </div>
+                        </div>
 
-                    <label for="contact-email" class="sr-only">Your email</label>
-                    <input type="email" id="contact-email" name="email" placeholder="Your email" required autocomplete="email">
+                        <label for="contact-message" class="sr-only">Your message</label>
+                        <textarea id="contact-message" name="message" placeholder="Your message" required></textarea>
 
-                    <label for="contact-message" class="sr-only">Your message</label>
-                    <textarea id="contact-message" name="message" placeholder="Your message" required></textarea>
+                        <button type="submit">Send Message</button>
 
-                    <button type="submit">Send Message</button>
-
-                    <div class="form-status" id="formStatus" role="status" aria-live="polite" hidden></div>
-                </form>
+                        <div class="form-status" id="formStatus" role="status" aria-live="polite" hidden></div>
+                    </form>
+                </div>
             </div>
         </section>
     </main>
