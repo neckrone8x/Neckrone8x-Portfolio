@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found | Neckrone8x</title>
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Apply the saved theme before paint (same 'theme' key as index.html) -->
+    <script>
+        (function () {
+            var theme;
+            try { theme = localStorage.getItem('theme'); } catch (e) {}
+            if (!theme) {
+                theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            }
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
+    <!-- Absolute paths: GitHub Pages serves this file for any missing URL, at any depth -->
+    <link rel="icon" href="/favicon.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --card-grad-start: rgba(56, 189, 248, 0.07);
+            --card-grad-end: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --glow-hover: rgba(56, 189, 248, 0.8);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --card-grad-start: rgba(255, 255, 255, 0.95);
+            --card-grad-end: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --glow-hover: rgba(2, 132, 199, 0.6);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            line-height: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+        .theme-toggle:hover { color: var(--accent); }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 16px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 520px;
+            text-align: center;
+            background: linear-gradient(145deg, var(--card-grad-start), var(--card-grad-end));
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .code {
+            font-size: 4.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--accent);
+        }
+
+        .small-title {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 600;
+            margin: 0.75rem 0 0.5rem;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p.lead {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .buttons a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            border: 2px solid var(--accent);
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--bg-primary);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+            box-shadow: 0 0 20px var(--glow-hover);
+        }
+
+        .btn-secondary { color: var(--accent); }
+        .btn-secondary:hover {
+            background-color: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 480px) {
+            header nav { padding: 1rem 16px; }
+            .code { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/" class="brand">NECKRONE8X</a>
+            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme"></button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="card">
+            <div class="code">404</div>
+            <p class="small-title">Page not found</p>
+            <h1>This page doesn't exist</h1>
+            <p class="lead">The link may be broken, or the page may have moved.</p>
+            <div class="buttons">
+                <a href="/" class="btn-primary"><i class="bi bi-house" aria-hidden="true"></i> Back home</a>
+                <a href="/#projects" class="btn-secondary"><i class="bi bi-code-slash" aria-hidden="true"></i> View projects</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Neckrone8x. All rights reserved.</p>
+    </footer>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('theme-toggle');
+
+            function render(theme) {
+                btn.innerHTML = theme === 'dark'
+                    ? '<i class="bi bi-moon-stars" aria-hidden="true"></i>'
+                    : '<i class="bi bi-sun" aria-hidden="true"></i>';
+                btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+            }
+
+            render(document.documentElement.getAttribute('data-theme'));
+
+            btn.addEventListener('click', function () {
+                var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                try { localStorage.setItem('theme', next); } catch (e) {}
+                render(next);
+            });
+        })();
+    </script>
+</body>
+
+</html>
