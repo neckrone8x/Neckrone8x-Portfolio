@@ -1512,7 +1512,9 @@
             right: 20px;
             bottom: 88px;
             width: 380px;
-            height: min(580px, calc(100vh - 120px));
+            height: 560px;
+            max-height: calc(100vh - 260px); /* stays clear of the top navigation */
+            min-height: 360px;
             display: none;
             flex-direction: column;
             background: var(--bg-secondary);
@@ -1597,6 +1599,14 @@
             border: 1px solid rgba(239, 68, 68, 0.35);
             border-bottom-left-radius: 4px;
         }
+        .chat-msg strong { font-weight: 600; }
+        .chat-msg a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .chat-msg a:hover { color: var(--accent-hover); }
+
         .chat-msg.typing::after {
             content: '';
             display: inline-block;
@@ -1719,6 +1729,8 @@
                 width: auto;
                 height: auto;
                 height: 100dvh;
+                max-height: none;
+                min-height: 0;
                 border-radius: 0;
                 border: none;
             }
@@ -3259,6 +3271,50 @@
                 log.scrollTop = log.scrollHeight;
                 return el;
             }
+            /* Safe formatting for assistant replies: **bold**, emails and
+               https:// links. Built from DOM nodes only; everything else
+               stays plain text (no innerHTML anywhere). */
+            var LINK_RE = /(https:\/\/[^\s<>"'`]+|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g;
+            function appendLinked(parent, text) {
+                var last = 0, m;
+                LINK_RE.lastIndex = 0;
+                while ((m = LINK_RE.exec(text)) !== null) {
+                    var match = m[0];
+                    // Leave trailing punctuation outside the link
+                    var trail = (match.match(/[.,;:!?)\]}'"]+$/) || [''])[0];
+                    if (trail) match = match.slice(0, -trail.length);
+                    if (!match || match === 'https://') continue;
+                    if (m.index > last) parent.appendChild(document.createTextNode(text.slice(last, m.index)));
+                    var a = document.createElement('a');
+                    if (match.indexOf('https://') === 0) {
+                        a.href = match;
+                        a.target = '_blank';
+                        a.rel = 'noopener noreferrer';
+                    } else {
+                        a.href = 'mailto:' + match;
+                    }
+                    a.textContent = match;
+                    parent.appendChild(a);
+                    last = m.index + match.length;
+                }
+                if (last < text.length) parent.appendChild(document.createTextNode(text.slice(last)));
+            }
+            function renderReply(el, text) {
+                while (el.firstChild) el.removeChild(el.firstChild);
+                // Odd parts are inside a closed **...** pair
+                var parts = text.split(/\*\*([^*\n]+?)\*\*/);
+                parts.forEach(function (part, i) {
+                    if (!part) return;
+                    if (i % 2 === 1) {
+                        var b = document.createElement('strong');
+                        appendLinked(b, part);
+                        el.appendChild(b);
+                    } else {
+                        appendLinked(el, part);
+                    }
+                });
+            }
+
             function say(text) {
                 // Re-set so screen readers announce repeated messages too
                 announce.textContent = '';
@@ -3362,7 +3418,7 @@
                     finished = true;
                     if (bot) bot.classList.remove('typing');
                     if (!reply) { fail(MSG_GENERIC); return; }
-                    say('Mkuu AI: ' + reply);
+                    say('Mkuu AI: ' + reply.replace(/\*\*/g, ''));
                 }
                 function handleLine(line) {
                     line = line.trim();
@@ -3373,7 +3429,7 @@
                     if (typeof data.token === 'string') {
                         if (!bot) bot = addMsg('bot typing', '');
                         reply += data.token;
-                        bot.textContent = reply;
+                        renderReply(bot, reply);
                         log.scrollTop = log.scrollHeight;
                     }
                     if (data.error) fail(MSG_GENERIC);
@@ -3459,7 +3515,8 @@
                         }
                         var answer = '(Mock reply) Bradley builds web apps, AI tools and IoT projects. ' +
                             'Highlights include Mkuu AI, Neckrone8x Stories, a weather app, an M-Pesa Daraja integration ' +
-                            'and an ESP32 dashboard. <b>This tag should show as plain text.</b> ' +
+                            'and an ESP32 dashboard. Email **mkuuapp@gmail.com** or see https://stories.neckrone8x.co.ke/ ' +
+                            'This must show as text: <b>x</b>. ' +
                             'Try "429", "429 day", "503" or "offline" to see the error messages.';
                         var words = answer.match(/\S+\s*/g) || [];
                         var enc = new TextEncoder();
